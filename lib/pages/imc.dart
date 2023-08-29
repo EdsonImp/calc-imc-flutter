@@ -29,23 +29,23 @@ class _ImcState extends State<Imc> {
   }
 
 
-  Text? resultado (double imc){
+  String? resultado (double imc){
      if(imc < 16){
-       return Text("Magreza grave");
+       return "Magreza grave";
      }else if(imc < 17){
-       return Text("Magreza moderada");
+       return "Magreza moderada";
      }else if(imc < 18.5){
-       return Text("Magreza moderada");
+       return "Magreza moderada";
      }else if (imc < 25){
-       return Text("Saudável");
+       return "Saudável";
      }else if (imc < 30){
-       return Text("Sobrepeso");
+       return "Sobrepeso";
      }else if (imc < 35){
-       return Text("Obesidade grau 1");
+       return "Obesidade grau 1";
      }else if (imc >= 40){
-       return Text("Obesidade grau 2");
+       return "Obesidade grau 2";
      }else {
-       return Text("Obesidade móbida");}
+       return "Obesidade móbida";}
 
 
   }
@@ -99,7 +99,7 @@ class _ImcState extends State<Imc> {
                                  showDialog(context: context, builder: (BuildContext bc){
                                    return AlertDialog(
                                      title: Text("Seu IMC: ${imc.round()}"),
-                                     content: resultado(imc),
+                                     content: Text(resultado(imc)!),
                                      actions: [
                                        ElevatedButton(onPressed: (){
                                          Navigator.pop(context);
@@ -159,7 +159,7 @@ class _ImcState extends State<Imc> {
                               showDialog(context: context, builder: (BuildContext bc){
                                 return AlertDialog(
                                   title: Text("Seu IMC: ${imc.round()}"),
-                                  content: resultado(imc),
+                                  content: Text(resultado(imc)!),
                                   actions: [
                                     ElevatedButton(onPressed: (){
                                       Navigator.pop(context);
@@ -195,14 +195,26 @@ class _ImcState extends State<Imc> {
       body: ListView.builder(
           itemCount: listaImc.length,
           itemBuilder: (BuildContext bc, int index){
-        return Container(
+            var imc = CalcImc.calcImc(listaImc[index].peso , listaImc[index].altura);
+            var imc_situacao = resultado(imc);
+        return Dismissible(
+        key: Key(listaImc[index].id),
+        background: Container(color:Colors.red),
+        onDismissed: (DismissDirection dismissDirection) async{
+        await  imcRepositories.removeImc(listaImc[index].id);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("${listaImc[index].nome} removido")));
+        obterListaImc();
+         },
+        child: Card(
           child: ListTile(
-            title: Text("Nome: ${listaImc[index].nome}"),
+            tileColor: Colors.white54,
+
+            title: Text("Nome: ${listaImc[index].nome} -- Situação : $imc_situacao"),
             subtitle: Text("Peso ${listaImc[index].peso} -"
-                " Altura: ${listaImc[index].altura } - "
-                " = ${listaImc[index].peso.round() / (listaImc[index].altura.round() * listaImc[index].altura.round() )}"),
-          )
-        );
+                " Altura: ${listaImc[index].altura } - IMC = ${imc.round()}"),
+          ),
+        ),
+          );
       }),
     );
   }
