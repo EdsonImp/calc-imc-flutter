@@ -7,7 +7,7 @@ class ImcModel{
   double _peso = 0;
   double _altura = 0;
 
-  ImcModel(this._id, this._nome,this._peso, this._altura);
+  ImcModel(this._nome,this._peso, this._altura);
 
   double get altura => _altura;
 
