@@ -16,7 +16,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'calculadora de imc',
       theme: ThemeData(
-
         primarySwatch: Colors.blue,
         textTheme: GoogleFonts.robotoCondensedTextTheme(),
       ),
